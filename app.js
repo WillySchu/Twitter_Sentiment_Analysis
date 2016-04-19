@@ -40,7 +40,6 @@ passport.use(new GithubStrategy ({
 },
   (accessToken, refreshToken, profile, done) => {
     User.findOrCreate({ githubid: profile.id }, (err, user) => {
-      console.log(user);
       return done(err, user);
   });
 }));
@@ -55,7 +54,6 @@ passport.deserializeUser((user, done) => {
 
 app.use((req, res, next) => {
   console.log(req.user);
-  console.log(req.isAuthenticated());
   res.locals.user = req.user;
   next();
 });
