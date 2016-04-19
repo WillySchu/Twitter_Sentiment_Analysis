@@ -2,7 +2,6 @@
 
 const express = require('express');
 const path = require('path');
-const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
@@ -44,9 +43,10 @@ passport.use(new GithubStrategy ({
   callbackURL: 'http://127.0.0.1:3000/auth/github/callback'
 },
   (accessToken, refreshToken, profile, done) => {
-    User.findOrCreate({ githubid: profile.id }, (err, user) => {
-      return done(err, user);
-  });
+  //   User.findOrCreate({ githubid: profile.id }, (err, user) => {
+  //     return done(err, user);
+  // });
+  return done(null, profile);
 }));
 
 passport.serializeUser((user, done) => {
@@ -54,7 +54,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((user, done) => {
-  done(null, user);
+  done(null, obj);
 });
 
 app.use('/', routes);
