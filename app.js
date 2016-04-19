@@ -32,10 +32,6 @@ app.use(cookieSession({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use((req, res, next) => {
-  res.locals.user = req.user;
-  next();
-});
 
 passport.use(new GithubStrategy ({
   clientID: process.env.GITHUB_CLIENT_ID,
@@ -43,10 +39,10 @@ passport.use(new GithubStrategy ({
   callbackURL: 'http://127.0.0.1:3000/auth/github/callback'
 },
   (accessToken, refreshToken, profile, done) => {
-  //   User.findOrCreate({ githubid: profile.id }, (err, user) => {
-  //     return done(err, user);
-  // });
-  return done(null, profile);
+    User.findOrCreate({ githubid: profile.id }, (err, user) => {
+      console.log(user);
+      return done(err, user);
+  });
 }));
 
 passport.serializeUser((user, done) => {
@@ -54,7 +50,14 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((user, done) => {
-  done(null, obj);
+  done(null, user);
+});
+
+app.use((req, res, next) => {
+  console.log(req.user);
+  console.log(req.isAuthenticated());
+  res.locals.user = req.user;
+  next();
 });
 
 app.use('/', routes);

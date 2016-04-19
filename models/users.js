@@ -11,12 +11,12 @@ Users.findOrCreate = (githubid, callback) => {
   return Users().first().where(githubid).then((user) => {
     if (!user) {
       Users().insert(githubid, '*').then((poser) => {
-        return callback(poser)
-      })
+        return callback(null, poser)
+      });
     } else {
-      return callback(user)
+      return callback(null, user)
     }
-  })
+  });
 }
 
 module.exports = Users;
