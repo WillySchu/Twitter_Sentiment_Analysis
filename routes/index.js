@@ -18,7 +18,7 @@ router.post('/', (req, res, next) => {
         scores.push(data[i].score);
       }
       res.render('index', {scores})
-    })
+    });
   });
 });
 
@@ -27,7 +27,7 @@ function pSentiment(text) {
     sentiment(text, (err, result) => {
       if (err) reject(err);
       resolve(result);
-    })
+    });
   });
   return promise;
 }
