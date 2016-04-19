@@ -13,7 +13,7 @@ const passport = require('passport');
 const routes = require('./routes/index');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
-
+const User = require('./models/users.js');
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -44,7 +44,7 @@ passport.use(new GithubStrategy ({
   callbackURL: 'http://127.0.0.1:3000/auth/github/callback'
 },
   (accessToken, refreshToken, profile, done) => {
-    User.findOrCreate({ githubId: profile.id }, (err, user) => {
+    User.findOrCreate({ githubid: profile.id }, (err, user) => {
       return done(err, user);
   });
 }));

@@ -5,6 +5,7 @@ exports.up = (knex, Promise) => {
     table.string('name');
     table.string('email');
     table.string('password');
+    table.integer('githubid');
   });
 };
 
