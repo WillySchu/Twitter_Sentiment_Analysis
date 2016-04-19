@@ -12,6 +12,7 @@ router.get('/github',
 router.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/login'}),
   (req, res) => {
+    console.log('hi');
     res.redirect('/')
   }
 );
