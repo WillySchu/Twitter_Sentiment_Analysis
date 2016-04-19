@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const sentiment = require('sentiment');
+const Promise = require('bluebird');
+
 const searchTwitter = require('../lib/search');
 
 router.get('/', function(req, res, next) {
@@ -8,12 +10,26 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', (req, res, next) => {
-  searchTwitter(req.body.test, () => {
-
-  });
-  sentiment(req.body.test, (err, result) => {
-    res.render('index', {test: result.score})
+  searchTwitter(req.body.test, (tweets) => {
+    const pTweets = tweets.map(pSentiment);
+    Promise.all(pTweets).then(data => {
+      const scores = [];
+      for (var i = 0; i < data.length; i++) {
+        scores.push(data[i].score);
+      }
+      res.render('index', {scores})
+    })
   });
 });
+
+function pSentiment(text) {
+  const promise = new Promise((resolve, reject) => {
+    sentiment(text, (err, result) => {
+      if (err) reject(err);
+      resolve(result);
+    })
+  });
+  return promise;
+}
 
 module.exports = router;
