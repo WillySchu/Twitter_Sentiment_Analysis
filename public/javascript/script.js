@@ -85,6 +85,8 @@ const bubbleChart = () => {
    return myNodes;
   }
 
+  const margin = {top: 20, right: 20, bottom: 30, left: 40};
+
   const x = d3.scale.linear()
     .range([0, width]);
 
@@ -120,8 +122,8 @@ const bubbleChart = () => {
       bubbles = svg.selectAll('.bubble')
         .data(nodes, (d) => { return d.id });
 
-      x.domain(d3.extent(nodes.map(node => { return node.value }))).nice();
-      y.domain(d3.extent(nodes.map(node => { return node.id }))).nice();
+        x.domain(d3.extent(nodes.map(node => { return node.value }))).nice();
+        y.domain(d3.extent(nodes.map(node => { return node.id }))).nice();
 
       bubbles.enter().append('circle')
         .classed('bubble', true)
@@ -129,52 +131,58 @@ const bubbleChart = () => {
         .attr('fill', (d) => { return fillColor(d.group); })
         .attr('stroke', (d) => { return d3.rgb(fillColor(d.group)).darker(); })
         .attr('stroke-width', 0.3)
-        .attr('cx', xMap)
-        .attr('cy', yMap)
-        // .on('mouseover', showDetail)
-        // .on('mouseout', hideDetail);
+        .on('mouseover', showDetail)
+        .on('mouseout', hideDetail);
 
        bubbles.transition()
         .duration(2000)
         .attr('r', (d) => { return d.radius; });
 
-      scatterPlot()
-      // groupBubbles(); CALL CHART MAKER
+      groupBubbles();
     });
   };
 
-  // const groupBubbles = () => {
-  //   hideYears();
-  //
-  //   force.on('tick', (e) => {
-  //     bubbles.each(moveToCenter(e.alpha))
-  //       .attr('cx', (d) => { return d.x })
-  //       .attr('cy', (d) => { return d.y });
-  //   });
-  //
-  //   force.start();
-  // }
-  //
-  // const moveToCenter = (alpha) => {
-  //   return (d) => {
-  //     d.x = d.x + (center.x - d.x) * damper * alpha;
-  //     d.y = d.y + (center.y - d.y) * damper * alpha;
-  //   }
-  // };
-  //
-  // const splitBubbles = () => {
-  //   showYears();
-  //
-  //   force.on('tick', (e) => {
-  //     bubbles.each(moveToYears(e.alpha))
-  //       .attr('cx', (d) => { return d.x; })
-  //       .attr('cy', (d) => { return d.y; });
-  //   });
-  //   force.start();
-  // }
-  const margin = {top: 20, right: 20, bottom: 30, left: 40};
+  const groupBubbles = () => {
+    hideYears();
+    hideAxes();
+
+    force.on('tick', (e) => {
+      bubbles.each(moveToCenter(e.alpha))
+        .attr('cx', (d) => { return d.x })
+        .attr('cy', (d) => { return d.y });
+    });
+
+    force.start();
+  }
+
+  const moveToCenter = (alpha) => {
+    return (d) => {
+      d.x = d.x + (center.x - d.x) * damper * alpha * 1.1;
+      d.y = d.y + (center.y - d.y) * damper * alpha * 1.1;
+    }
+  };
+
+  const splitBubbles = () => {
+    showYears();
+    hideAxes();
+    force.on('tick', (e) => {
+      bubbles.each(moveToYears(e.alpha))
+        .attr('cx', (d) => { return d.x; })
+        .attr('cy', (d) => { return d.y; });
+    });
+    force.start();
+  }
+
+  const moveToYears = (alpha) => {
+    return (d) => {
+      const target = yearCenters[d.year];
+      d.x = d.x + (target.x - d.x) * damper * alpha * 1.1;
+      d.y = d.y + (target.y - d.y) * damper * alpha * 1.1;
+    };
+  }
 
   const scatterPlot = () => {
+    hideYears();
     svg.append('g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + height +')')
@@ -185,58 +193,75 @@ const bubbleChart = () => {
     svg.append('g')
       .attr('class', 'y axis')
       .call(yAxis);
+
+    force.on('tick', (e) => {
+      bubbles.each(moveToAxes(e.alpha))
+      .attr('cx', (d) => { console.log(d.x); return d.x; })
+      .attr('cy', (d) => { console.log(d.y); return d.y; });
+
+      // .attr('cx', (d) => { console.log(x(d.value)); return x(d.value) })
+      // .attr('cy', (d) => { console.log(y(d.id)); return y(d.id) })
+    });
+    force.start();
   }
 
-  // const moveToYears = (alpha) => {
-  //   return (d) => {
-  //     const target = yearCenters[d.year];
-  //     d.x = d.x + (target.x - d.x) * damper * alpha * 1.1;
-  //     d.y = d.y + (target.y - d.y) * damper * alpha * 1.1;
-  //   };
-  // }
-  //
-  // const hideYears = () => {
-  //   svg.selectAll('.year').remove();
-  // }
-  //
-  // const showYears = () => {
-  //   const yearsData = d3.keys(yearsTitleX);
-  //   const years = svg.selectAll('.year')
-  //     .data(yearsData);
-  //
-  //     years.enter().append('text')
-  //       .attr('class', 'year')
-  //       .attr('x', (d) => { return yearsTitleX[d]; })
-  //       .attr('y', 40)
-  //       .attr('text-anchor', 'middle')
-  //       .text((d) => { return d; });
-  // }
-  //
-  // const showDetail = (d) => {
-  //   // d3.select(this).attr('stroke', 'black');
-  //
-  //   const content = '<span class="name">Title: </span><span class="value">' +
-  //                 d.name +
-  //                 '</span><br/>' +
-  //                 '<span class="name">Amount: </span><span class="value">$' +
-  //                 addCommas(d.value) +
-  //                 '</span><br/>' +
-  //                 '<span class="name">Year: </span><span class="value">' +
-  //                 d.year +
-  //                 '</span>';
-  //   tooltip.showTooltip(content, d3.event);
-  // }
-  //
-  // const hideDetail = (d) => {
-  //   // d3.select(this)
-  //   //   .attr('stroke', d3.rgb(fillColor(d.group)).darker());
-  //
-  //   tooltip.hideTooltip();
-  // }
+  const moveToAxes = (alpha) => {
+    // x(d.value)
+    // y(d.id)
+    return (d) => {
+      d.x = d.x + (x(d.value) - d.x) * damper * alpha * 1.1;
+      d.y = d.y + (y(d.id) - d.y) * damper * alpha * 1.1;
+    };
+  }
+
+  const hideYears = () => {
+    svg.selectAll('.year').remove();
+  }
+
+  const hideAxes = () => {
+    svg.selectAll('g').remove();
+  }
+
+  const showYears = () => {
+    const yearsData = d3.keys(yearsTitleX);
+    const years = svg.selectAll('.year')
+      .data(yearsData);
+
+      years.enter().append('text')
+        .attr('class', 'year')
+        .attr('x', (d) => { return yearsTitleX[d]; })
+        .attr('y', 40)
+        .attr('text-anchor', 'middle')
+        .text((d) => { return d; });
+  }
+
+  const showDetail = (d) => {
+    // d3.select(this).attr('stroke', 'black');
+
+    const content = '<span class="name">Title: </span><span class="value">' +
+                  d.name +
+                  '</span><br/>' +
+                  '<span class="name">Amount: </span><span class="value">$' +
+                  addCommas(d.value) +
+                  '</span><br/>' +
+                  '<span class="name">Year: </span><span class="value">' +
+                  d.year +
+                  '</span>';
+    tooltip.showTooltip(content, d3.event);
+  }
+
+  const hideDetail = (d) => {
+    // d3.select(this)
+    //   .attr('stroke', d3.rgb(fillColor(d.group)).darker());
+
+    tooltip.hideTooltip();
+  }
 
   chart.toggleDisplay = (displayName) => {
     if (displayName === 'year') {
       splitBubbles();
+    } else if (displayName === 'scatter') {
+      scatterPlot();
     } else {
       groupBubbles();
     }
