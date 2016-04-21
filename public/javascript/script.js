@@ -1,26 +1,26 @@
 'use strict'
 
 const bubbleChart = () => {
-  const width = 940;
-  const height = 600;
+  const width = 1000;
+  const height = 700;
   const tooltip = floatingTooltip('gates_tooltip', 240);
 
   const center = { x: width/2, y: height/2 };
 
   const yearCenters = {
-    2006: { x: 156, y: height/2 } ,
-    2007: { x: 312, y: height/2 },
-    2008: { x: 468, y: height/2 },
-    2009: { x: 624, y: height/2 },
-    2010: { x: 780, y: height/2 }
+    2006: { x: 300, y: height/2 } ,
+    2007: { x: 400, y: height/2 },
+    2008: { x: 500, y: height/2 },
+    2009: { x: 600, y: height/2 },
+    2010: { x: 700, y: height/2 }
   };
 
   const yearsTitleX = {
-    2006: 156,
-    2007: 312,
-    2008: 468,
-    2009: 628,
-    2010: 780
+    2006: width/7,
+    2007: width/3,
+    2008: width/2,
+    2009: width/1.5,
+    2010: width/1.2
   }
 
   const damper = 0.102;
@@ -30,7 +30,7 @@ const bubbleChart = () => {
   let nodes = [];
 
   const charge = (d) => {
-    return -Math.pow(d.radius, 2.0)/8
+    return -Math.pow(d.radius, 2.0)/9
   }
 
   const force = d3.layout.force()
@@ -45,7 +45,7 @@ const bubbleChart = () => {
 
   const radiusScale = d3.scale.pow()
     .exponent(0.6)
-    .range([2, 80]);
+    .range([2, 90]);
 
   const fetchData = (callback) => {
     // $.get('sdfsdf', data => {
@@ -56,7 +56,7 @@ const bubbleChart = () => {
     const myNodes = [];
     var org = ['low', 'low2', 'medium', 'med2', 'high'];
     for (var i = 0; i < 150; i++) {
-      var myValue = (Math.random() * 10000000) + 10000000;
+      var myValue = (Math.random() * 10000000) + 1000000;
       var myYear = Math.floor(Math.random() * 5) + 2006;
       myNodes.push({
         id: i,
@@ -65,7 +65,7 @@ const bubbleChart = () => {
         year: myYear,
         group: org[Math.floor(Math.random() * org.length)],
         x: Math.random() * 900,
-        y: Math.random() * 800
+        y: Math.random() * 900
       });
     }
     // const myNodes = rawData.map((d) => {
@@ -106,7 +106,7 @@ const bubbleChart = () => {
         .attr('r', 0)
         .attr('fill', (d) => { return fillColor(d.group); })
         .attr('stroke', (d) => { return d3.rgb(fillColor(d.group)).darker(); })
-        .attr('stroke-width', 1)
+        .attr('stroke-width', 0.3)
         .on('mouseover', showDetail)
         .on('mouseout', hideDetail);
 
