@@ -1,0 +1,17 @@
+extends ../layout
+
+block content
+  if data
+    | New Search for #{data.name}
+    br
+    form(action='/searches/#{data.id}' method='post')
+      label Keyword(s)
+      input(type='text' name='keyword')
+      input(type='submit' value='Go')
+  else
+    | New Search
+    br
+    form(action='/searches' method='post')
+      label Keyword(s)
+      input(type='text' name='keyword')
+      input(type='submit' value='Go')

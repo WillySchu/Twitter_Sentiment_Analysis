@@ -1,0 +1,17 @@
+extends ../layout
+
+block content
+  h1 New Search
+    form(action='users' method='post')
+    label Name
+    input(type='text' name='name')
+    br
+    label Email
+    input(type='email' name='email')
+    br
+    label Password
+    input(type='password' name='password')
+    br
+    label Github ID
+    input(type='text' name='githubid')
+    input(type='submit' value='Go')
