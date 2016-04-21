@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const knex = require('../db/knex');
-const sentiment = require('sentiment');
 const Promise = require('bluebird');
 
+const sentiment = require('../lib/sent');
 const searchTwitter = require('../lib/search');
 
 
@@ -23,7 +23,9 @@ router.post('/', (req, res, next) => {
   // this route will just produce a result,
   // but will not insert anything into the tables
   searchTwitter(req.body.keyword, 10, (tweets) => {
-    console.log(tweets);
+    sentiment.slow(tweets, (results) => {
+      console.log(results);
+    });
     res.render('results', {scores: '(this is the scores object)'});
   });
 });
