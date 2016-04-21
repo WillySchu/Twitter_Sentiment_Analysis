@@ -107,10 +107,12 @@ def get_score(text):
 
 splitter = Splitter()
 postagger = POSTagger()
-dicttagger = DictionaryTagger(['positive.yml', 'negative.yml', 'inc.yml', 'dec.yml', 'inv.yml'])
+dicttagger = DictionaryTagger(['lib/positive.yml', 'lib/negative.yml', 'lib/inc.yml', 'lib/dec.yml', 'lib/inv.yml'])
 
+def test(tweet):
+    return tweet
 
 for line in fileinput.input():
     tweets = json.loads(line)
-    scores = [get_score(tweet) for tweet in tweets]
+    scores = [get_score(tweet['text']) for tweet in tweets]
     print json.dumps(scores)
