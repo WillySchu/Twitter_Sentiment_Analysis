@@ -1,11 +1,3 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-  color: #00B7FF;
-}
 
 a, a:visited, a:active {
   color: #444;
@@ -85,4 +77,41 @@ circle:hover {
 
 .footer {
   text-align: center;
+=======
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+.text-centered {
+  text-align: center;
+}
+
+.row-centered {
+  text-align: center;
+}
+
+.text-wireframe {
+  padding: inherit;
+}
+
+.text-wireframe {
+  border-style: solid;
+}
+
+.board {
+  padding-bottom: 30px;
 }
