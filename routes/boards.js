@@ -6,14 +6,39 @@ function Boards() {
   return knex('boards');
 }
 
+function Searches() {
+  return knex('searches');
+}
+
+function Users() {
+  return knex('users');
+}
+
 router.get('/new', (req, res, next) => {
   res.render('boards/new');
 });
 
+// router.get('/', (req, res, next) => {
+//   Boards()
+//   .then(data => {
+//     console.log(data);
+//     res.render('boards/index', {data});
+//   });
+// });
+
 router.get('/', (req, res, next) => {
-  Boards()
-  .then(data => {
-    res.render('boards/index', {data});
+  Users()
+  .join('boards', 'boards.user_id', '=', 'users.id')
+  .select('users.name as username', 'users.id as userid', 'boards.name as boardname', 'boards.id as boardid')
+  .then(boards => {
+    Searches()
+    .join('boards_searches', 'boards_searches.search_id', '=', 'searches.id')
+    .select('searches.key1', 'boards_searches.search_id', 'boards_searches.board_id')
+    .then(searches => {
+      console.log(boards);
+      console.log(searches);
+      res.render('boards/index', {boards, searches});
+    });
   });
 });
 
