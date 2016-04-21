@@ -20,12 +20,11 @@ router.get('/new', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-  // this route will just produce a result,
-  // but will not insert anything into the tables
-  searchTwitter(req.body.keyword, 10, (tweets) => {
+  searchTwitter(req.body.keyword, 100, (tweets) => {
     sentiment.slow(tweets, (results) => {
-      console.log(results);
-      res.render('searches/results', {results});
+      Searches().insert({key1: req.body.keyword, scores: JSON.stringify(results)}, '*').then(data => {
+        res.render('searches/results', {results: data[0].scores});
+      });
     });
   });
 });
@@ -39,15 +38,9 @@ router.get('/new/:id', (req, res, next) => {
 });
 
 router.post('/:id', (req, res, next) => {
-  // this route will produce the result page AND insert into the tables
-  searchTwitter(req.body.keyword, (tweets) => {
-    Promise.all([tweets]).then(data => {
-      const scores = [];
-      for (var i = 0; i < data.length; i++) {
-        scores.push(data[i].score);
-      }
-      console.log(scores);
-      res.render('results', {scores: '(this is the scores object)'});
+  searchTwitter(req.body.keyword, 10, (tweets) => {
+    sentiment.slow(tweets, (results) => {
+      res.render('searches/results', {results});
     });
   });
 });
