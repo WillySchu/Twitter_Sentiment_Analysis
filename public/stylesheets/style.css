@@ -109,14 +109,38 @@ body {
   padding: inherit;
 }
 
+.results {
+  height: 300px;;
+  width: 300px;
+  margin: 10px;
+  text-align: center;
+  padding-top: 10px;
+  color: black
+}
+
 .text-wireframe {
   border-style: solid;
 }
 
 .board {
-  padding-bottom: 30px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 .buffer-div {
   height: 100px;
+}
+
+.board-data {
+  height: 100px;
+  width: 100%;
+  padding-top: 5px;
+}
+
+.board-labels {
+  width: 25%;
+}
+
+a, a:hover, a:focus, a:visited, a:active {
+  text-decoration: none;
 }

@@ -1,33 +1,28 @@
 extends ../layout
 
 block content
-  h1 Boards
+  br
+  br
+  br
+  br
+  br
   .container-fluid
-    for item in data
-      .row.board
-        .col-md-12.text-wireframe.text-centered
-          .col-md-4
-            h5.text-wireframe.board-data Project Name:
-              a(href='boards/#{item.id}')= item.name
-            h5.text-wireframe Date Created: goes here
-            h5.text-wireframe Created By: goes here
-          .col-md-4.text-wireframe
-            br
-            br
-            br
-            br
-            p D3 rendering img goes here
-            br
-            br
-            br
-            br
-          .col-md-4
-            h5.text-wireframe.board-data Versions Drop Down: goes here
-            h5.text-wireframe Collaborators: goes here
-            h5.text-wireframe Notes: goes here
+    h1 Boards
+    .container-fluid
+      for board in boards
+        .row.board.bg-primary
+          .col-md-12.text-wireframe
+            .col-md-4.board-labels
+              h2.text-wireframe.board-data.bg-info
+                a(href='boards/#{board.boardid}')= board.boardname
+                  h4 by&nbsp
+                    a(href='users/#{board.userid}')= board.username
+            for search in searches
+              if search.board_id === board.boardid
+                .col-md-4.text-wireframe.results.bg-warning
+                  = search.key1
+        br
     br
     p only save boards go on this page, we may need to make a new page for boards that are created by users not logged in.  if we do this will the user have a chance to log in afterwards and save the same project or must they be logged in prior to the search to keep the specific board saved?
     br
     p We also need to write some JS to make new boards generate automatically and to the top of the page / link with other projects if they are just versions of the same board
-
-  a.text-wireframe(href='boards/new') New Search
