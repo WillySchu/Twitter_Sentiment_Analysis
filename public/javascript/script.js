@@ -54,6 +54,7 @@ const bubbleChart = () => {
   }
   const url = '/api/' + getParameterByName('searchId')
   d3.json(url)
+  console.log(url);
 
   const createNodes = (rawData) => {
     const myNodes = [];
