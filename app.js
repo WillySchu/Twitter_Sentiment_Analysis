@@ -14,6 +14,7 @@ const users = require('./routes/users');
 const auth = require('./routes/auth');
 const boards = require('./routes/boards');
 const searches = require('./routes/searches');
+const api = require('./routes/api');
 const User = require('./models/users.js');
 const app = express();
 
@@ -66,6 +67,7 @@ app.use('/boards', boards);
 app.use('/auth', auth);
 app.use('/boards', boards);
 app.use('/searches', searches);
+app.use('/api', api);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
