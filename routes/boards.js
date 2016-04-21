@@ -35,8 +35,6 @@ router.get('/', (req, res, next) => {
     .join('boards_searches', 'boards_searches.search_id', '=', 'searches.id')
     .select('searches.key1', 'boards_searches.search_id', 'boards_searches.board_id')
     .then(searches => {
-      console.log(boards);
-      console.log(searches);
       res.render('boards/index', {boards, searches});
     });
   });
@@ -48,6 +46,7 @@ router.get('/:id', (req, res, next) => {
   .join('boards_searches', 'boards_searches.board_id', '=', 'boards.id')
   .join('searches', 'searches.id', '=', 'boards_searches.search_id')
   .then(data => {
+    console.log(data)
     res.render('boards/show', {data});
   });
 });

@@ -2,6 +2,8 @@ extends ../layout
 
 block content
   .buffer-div
+  form(action='results/#{id}' method='post')
+    input(type='submit' value='Add this search to ')
   ul
     if results
       each result in results

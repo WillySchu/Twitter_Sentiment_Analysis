@@ -23,7 +23,7 @@ router.post('/', (req, res, next) => {
   searchTwitter(req.body.keyword, 100, (tweets) => {
     sentiment.slow(tweets, (results) => {
       Searches().insert({key1: req.body.keyword, scores: JSON.stringify(results)}, '*').then(data => {
-        res.render('searches/results', {results: data[0].scores});
+        res.render('searches/results', {results: data[0].scores, id: data.id, key1: data.key1});
       });
     });
   });
