@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+  h1= data[0].name
+  div
+    for item in data
+      div
+        = item.key1
+        = item.scores
+  br
+  a(href='/searches/new/#{data[0].board_id}') Add a new search to this board
