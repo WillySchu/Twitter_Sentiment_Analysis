@@ -25,8 +25,8 @@ router.post('/', (req, res, next) => {
   searchTwitter(req.body.keyword, 10, (tweets) => {
     sentiment.slow(tweets, (results) => {
       console.log(results);
+      res.render('searches/results', {results});
     });
-    res.render('results', {scores: '(this is the scores object)'});
   });
 });
 
