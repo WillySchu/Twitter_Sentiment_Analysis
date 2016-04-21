@@ -1,0 +1,9 @@
+extends ../layout
+
+block content
+  h1 This is the Boards page
+  br
+  h1 Boards
+  for item in data
+    div= item.name
+      a(href='boards/#{item.id}') View

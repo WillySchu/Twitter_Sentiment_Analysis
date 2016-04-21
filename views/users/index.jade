@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+  h1 This is the Users page
+  br
+  h1 Current Users
+  for item in data
+    div
+      | Name: #{item.name}
+      | Email: #{item.email}
+      a(href='users/#{item.id}') View
+    br

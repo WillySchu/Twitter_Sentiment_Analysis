@@ -9,27 +9,12 @@ router.get('/', function(req, res, next) {
   res.render('index');
 });
 
-router.post('/', (req, res, next) => {
-  searchTwitter(req.body.test, (tweets) => {
-    const pTweets = tweets.map(pSentiment);
-    Promise.all(pTweets).then(data => {
-      const scores = [];
-      for (var i = 0; i < data.length; i++) {
-        scores.push(data[i].score);
-      }
-      res.render('index', {scores})
-    });
-  });
+router.get('/about', (req, res, next) => {
+  res.render('about');
 });
 
-function pSentiment(text) {
-  const promise = new Promise((resolve, reject) => {
-    sentiment(text, (err, result) => {
-      if (err) reject(err);
-      resolve(result);
-    });
-  });
-  return promise;
-}
+router.get('/login', (req, res, next) => {
+  res.render('login');
+});
 
 module.exports = router;

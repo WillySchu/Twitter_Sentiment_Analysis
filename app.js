@@ -12,6 +12,8 @@ const passport = require('passport');
 const routes = require('./routes/index');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
+const boards = require('./routes/boards')
+const searches = require('./routes/searches');
 const User = require('./models/users.js');
 const app = express();
 
@@ -29,20 +31,20 @@ app.use(cookieSession({
   keys: [process.env.SESSION_KEY]
 }));
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.use(new GithubStrategy ({
-  clientID: process.env.GITHUB_CLIENT_ID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: 'http://127.0.0.1:3000/auth/github/callback'
-},
-  (accessToken, refreshToken, profile, done) => {
-    User.findOrCreate({ githubid: profile.id }, (err, user) => {
-      return done(err, user);
-  });
-}));
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.use(passport.initialize());
+// app.use(passport.session());
+//
+// passport.use(new GithubStrategy ({
+//   clientID: process.env.GITHUB_CLIENT_ID,
+//   clientSecret: process.env.GITHUB_CLIENT_SECRET,
+//   callbackURL: 'http://127.0.0.1:3000/auth/github/callback'
+// },
+//   (accessToken, refreshToken, profile, done) => {
+//     User.findOrCreate({ githubid: profile.id }, (err, user) => {
+//       return done(err, user);
+//   });
+// }));
 
 passport.serializeUser((user, done) => {
   done(null, user);
@@ -60,6 +62,8 @@ app.use((req, res, next) => {
 app.use('/', routes);
 app.use('/users', users);
 app.use('/auth', auth);
+app.use('/boards', boards);
+app.use('/searches', searches);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
