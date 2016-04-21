@@ -41,7 +41,7 @@ const bubbleChart = () => {
 
   const fillColor = d3.scale.ordinal()
     .domain(['low', 'low2', 'medium', 'med2', 'high'])
-    .range(['#DFE3E4', '#FA9E5F', '#D9213B', '#75203D','#62A88C']);
+    .range(['#FFEDBC', '#EC7263', '#A75265', '#D9213B','#FEBE7E']);
 
   const radiusScale = d3.scale.pow()
     .exponent(0.6)
@@ -82,24 +82,48 @@ const bubbleChart = () => {
     //  };
   //  });
    myNodes.sort((a, b) => { return b.value - a.value })
-
    return myNodes;
   }
+
+  const margin = {top: 20, right: 20, bottom: 30, left: 40};
+
+  const x = d3.scale.linear()
+    .range([0, width]);
+
+  const xMap = (d) => { return x(d.value) }
+
+  const y = d3.scale.linear()
+    .range([height, 0]);
+
+  const yMap = (d) => { return y(d.id) }
+
+  const xAxis = d3.svg.axis()
+    .scale(x)
+    .orient('bottom');
+
+  const yAxis = d3.svg.axis()
+    .scale(y)
+    .orient('left');
 
   const chart = (selector, rawData) => {
     const maxAmount = d3.max(rawData, (d) => { return +d.total_amount; });
     radiusScale.domain([0, maxAmount]);
-    fetchData(function(nodes) {
+    fetchData(function() {
       nodes = createNodes(rawData);
       force.nodes(nodes);
 
       svg = d3.select(selector)
         .append('svg')
-        .attr('width', width)
-        .attr('height', height);
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
       bubbles = svg.selectAll('.bubble')
         .data(nodes, (d) => { return d.id });
+
+        x.domain(d3.extent(nodes.map(node => { return node.value }))).nice();
+        y.domain(d3.extent(nodes.map(node => { return node.id }))).nice();
 
       bubbles.enter().append('circle')
         .classed('bubble', true)
@@ -120,6 +144,7 @@ const bubbleChart = () => {
 
   const groupBubbles = () => {
     hideYears();
+    hideAxes();
 
     force.on('tick', (e) => {
       bubbles.each(moveToCenter(e.alpha))
@@ -132,14 +157,14 @@ const bubbleChart = () => {
 
   const moveToCenter = (alpha) => {
     return (d) => {
-      d.x = d.x + (center.x - d.x) * damper * alpha;
-      d.y = d.y + (center.y - d.y) * damper * alpha;
+      d.x = d.x + (center.x - d.x) * damper * alpha * 1.1;
+      d.y = d.y + (center.y - d.y) * damper * alpha * 1.1;
     }
   };
 
   const splitBubbles = () => {
     showYears();
-
+    hideAxes();
     force.on('tick', (e) => {
       bubbles.each(moveToYears(e.alpha))
         .attr('cx', (d) => { return d.x; })
@@ -156,8 +181,45 @@ const bubbleChart = () => {
     };
   }
 
+  const scatterPlot = () => {
+    hideYears();
+    svg.append('g')
+      .attr('class', 'x axis')
+      .attr('transform', 'translate(0,' + height +')')
+      .call(xAxis)
+      .attr('x', width)
+      .attr('y', -6);
+
+    svg.append('g')
+      .attr('class', 'y axis')
+      .call(yAxis);
+
+    force.on('tick', (e) => {
+      bubbles.each(moveToAxes(e.alpha))
+      .attr('cx', (d) => { console.log(d.x); return d.x; })
+      .attr('cy', (d) => { console.log(d.y); return d.y; });
+
+      // .attr('cx', (d) => { console.log(x(d.value)); return x(d.value) })
+      // .attr('cy', (d) => { console.log(y(d.id)); return y(d.id) })
+    });
+    force.start();
+  }
+
+  const moveToAxes = (alpha) => {
+    // x(d.value)
+    // y(d.id)
+    return (d) => {
+      d.x = d.x + (x(d.value) - d.x) * damper * alpha * 1.1;
+      d.y = d.y + (y(d.id) - d.y) * damper * alpha * 1.1;
+    };
+  }
+
   const hideYears = () => {
     svg.selectAll('.year').remove();
+  }
+
+  const hideAxes = () => {
+    svg.selectAll('g').remove();
   }
 
   const showYears = () => {
@@ -198,6 +260,8 @@ const bubbleChart = () => {
   chart.toggleDisplay = (displayName) => {
     if (displayName === 'year') {
       splitBubbles();
+    } else if (displayName === 'scatter') {
+      scatterPlot();
     } else {
       groupBubbles();
     }
