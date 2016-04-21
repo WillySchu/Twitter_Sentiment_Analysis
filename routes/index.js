@@ -9,6 +9,14 @@ router.get('/', function(req, res, next) {
   res.render('index');
 });
 
+router.get('/about', (req, res, next) => {
+  res.render('about');
+});
+
+router.get('/login', (req, res, next) => {
+  res.render('login');
+});
+
 router.post('/', (req, res, next) => {
   searchTwitter(req.body.test, (tweets) => {
     const pTweets = tweets.map(pSentiment);

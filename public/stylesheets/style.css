@@ -1,8 +1,50 @@
 body {
-  padding: 50px;
+  padding: 90px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+h1 {
+  padding: 20px;
 }
 
 a {
   color: #00B7FF;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+.text-centered {
+  text-align: center;
+}
+
+.row-centered {
+  text-align: center;
+}
+
+.text-wireframe {
+  padding: inherit;
+}
+
+.text-wireframe {
+  border-style: solid;
+}
+
+.board {
+  padding-bottom: 30px;
 }
