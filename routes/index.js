@@ -23,7 +23,7 @@ router.post('/', (req, res, next) => {
     Promise.all(pTweets).then(data => {
       const scores = [];
       for (var i = 0; i < data.length; i++) {
-        scores.push(data[i].score);
+        scores.push({text: tweets[i], score: data[i].score});
       }
       res.render('index', {scores})
     });
