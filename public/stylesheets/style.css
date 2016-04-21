@@ -77,7 +77,8 @@ circle:hover {
 
 .footer {
   text-align: center;
-=======
+}
+
 html {
   position: relative;
   min-height: 100%;
@@ -114,4 +115,8 @@ body {
 
 .board {
   padding-bottom: 30px;
+}
+
+.buffer-div {
+  height: 500px;
 }
