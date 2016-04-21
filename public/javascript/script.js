@@ -52,10 +52,13 @@ const bubbleChart = () => {
     callback(createNodes());
     // })
   }
+  const url = '/api/' + getParameterByName('searchId')
+  d3.json(url)
+
   const createNodes = (rawData) => {
     const myNodes = [];
     var org = ['low', 'low2', 'medium', 'med2', 'high'];
-    for (var i = 0; i < 150; i++) {
+    for (var i = -100; i < 150; i++) {
       var myValue = (Math.random() * 10000000) + 1000000;
       var myYear = Math.floor(Math.random() * 5) + 2006;
       myNodes.push({
@@ -99,7 +102,7 @@ const bubbleChart = () => {
 
   const xAxis = d3.svg.axis()
     .scale(x)
-    .orient('bottom');
+    .orient('middle');
 
   const yAxis = d3.svg.axis()
     .scale(y)
@@ -292,6 +295,16 @@ const setupButtons = () => {
 
       myBubbleChart.toggleDisplay(buttonId);
     });
+}
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 const addCommas = (nStr) => {
