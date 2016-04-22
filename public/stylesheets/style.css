@@ -3,6 +3,9 @@ a, a:visited, a:active {
   color: #444;
 }
 
+body {
+  padding-bottom: 70px
+}
 /*circle {
   -moz-transition: all 0.3s;
   -o-transition: all 0.3s;

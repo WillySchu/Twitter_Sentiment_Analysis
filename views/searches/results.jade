@@ -24,3 +24,13 @@ block content
           ul
             li= result.tweet.text
             li= result.score
+  .container
+        h1 Twitter Data
+        #toolbar
+          a#all.button.active(href='#') All Tweets
+          a#year.button(href='#') Tweets By Score
+          a#scatter.button(href='#') Scattery
+        #vis
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js', charset='utf-8')
+        script(src='/javascript/tooltip.js')
+        script(src='/javascript/script.js')
