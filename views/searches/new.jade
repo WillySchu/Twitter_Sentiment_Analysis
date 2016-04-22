@@ -1,20 +1,23 @@
 extends ../layout
 
 block content
-  .buffer-div
   .container
     if data
-      | New Search for #{data.name}
-      br
-      form(action='/searches' method='post')
-        label Keyword(s)
-        input(type='hidden' name='boardId' value='#{data.id}')
-        input(type='text' name='keyword')
-        input(type='submit' value='Go')
+      .row.search
+        .col-md-6.col-md-offset-3
+          label New Search for #{data.name}
+            form.input-group(action='/searches' method='POST')
+              input.form-control(type='text', placeholder='Search for...' name='keyword')
+              input(type='hidden' name='boardId' value='#{data.id}')
+              span.input-group-btn
+                button.btn.btn-default(type='submit') Go!
     else
-      | New Search
-      br
-      form(action='/searches' method='post')
-        label Keyword(s)
-        input(type='text' name='keyword')
-        input(type='submit' value='Go')
+      .row.search
+        .col-md-6.col-md-offset-3
+          label New Search
+            form.input-group(action='/searches' method='POST')
+              input.form-control(type='text', placeholder='Search for...' name='keyword')
+              span.input-group-btn
+                button.btn.btn-default(type='submit') Go!
+
+        

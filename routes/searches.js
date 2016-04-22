@@ -23,13 +23,6 @@ router.get('/new', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-<<<<<<< HEAD
-  searchTwitter(req.body.keyword, 20, (tweets) => {
-    sentiment.slow(tweets, (results) => {
-      Searches().insert({key1: req.body.keyword, scores: JSON.stringify(results)}).returning('id').then(id => {
-        console.log(id);
-        res.redirect('/searches/results?searchId=' + id[0] + '&searchTerm=' + req.body.keyword);
-=======
   if (req.body.boardId) {
     searchTwitter(req.body.keyword, 100, (tweets) => {
       sentiment.slow(tweets, (results) => {
@@ -38,7 +31,6 @@ router.post('/', (req, res, next) => {
             res.redirect('searches/results?searchId=' + id[0] + '&boardId=' + boardId);
           });
         });
->>>>>>> 5c622ccc7b18be7a3fb5e2396d66ed2144d6e334
       });
     });
   } else {
