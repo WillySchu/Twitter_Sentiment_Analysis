@@ -69,7 +69,7 @@ const bubbleChart = () => {
 
   const xAxis = d3.svg.axis()
     .scale(x)
-    .orient('bottom');
+    // .orient('bottom');
 
   const yAxis = d3.svg.axis()
     .scale(y)
@@ -173,7 +173,7 @@ const bubbleChart = () => {
     hideYears();
     svg.append('g')
       .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + height +')')
+      .attr('transform', 'translate(0,' + height - 50 +')')
       .call(xAxis)
       .attr('x', width)
       .attr('y', height);
