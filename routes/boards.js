@@ -18,14 +18,6 @@ router.get('/new', (req, res, next) => {
   res.render('boards/new');
 });
 
-// router.get('/', (req, res, next) => {
-//   Boards()
-//   .then(data => {
-//     console.log(data);
-//     res.render('boards/index', {data});
-//   });
-// });
-
 router.get('/', (req, res, next) => {
   Users()
   .join('boards', 'boards.user_id', '=', 'users.id')
