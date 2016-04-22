@@ -3,15 +3,17 @@ extends layout
 block content
   .container
     .row.search
-      .col-md-6.col-md-offset-3
-        form.text-center(action='/auth/form' method='GET')
-          input.form-control(type='email' name='email' placeholder='Email')
+      .container
+        .col-md-6.col-md-offset-3
+          form.text-center(action='/auth/signin' method='POST')
+            input.form-control(type='email' name='email' placeholder='Email')
+            br
+            input.form-control(type='password' name='password' placeholder='Password')
+            br
+            button.btn.btn-success.form-control(type='submit') Sign in
           br
-          input.form-control(type='password' name='password' placeholder='Password')
-          br
-          button.btn.btn-primary.form-control(type='submit') Sign in
-        br
-        h3.text-center.text-muted &#8211;&#8211;&#8211;&nbsp;or&nbsp;&#8211;&#8211;&#8211;
-        br
-        form.text-center(action='/auth/github' method='GET')
-          button.btn.btn-primary(type='submit') Sign in with Github
+
+      h4.text-center.text-muted &#8211;&#8211;&#8211;&nbsp;&nbsp;or&nbsp;&nbsp;&#8211;&#8211;&#8211;
+      br
+      form.text-center(action='/auth/github' method='GET')
+        button.btn.btn-primary(type='submit') Sign in with Github
