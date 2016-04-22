@@ -1,9 +1,10 @@
 extends ../layout
 
 block content
+
   .container
     .row
-      
+
       if !data
         form(action='/results/#{id}' method='post')
           label Add this search to existing board:&nbsp
