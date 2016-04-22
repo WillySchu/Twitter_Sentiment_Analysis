@@ -2,13 +2,6 @@ extends ../layout
 
 block content
   .buffer-div
-  ul
-    if results
-      each result in results
-        li= result.tweet.user.screen_name
-          ul
-            li= result.tweet.text
-            li= result.score
   .container
         h1 Twitter Data
         #toolbar
