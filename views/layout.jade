@@ -6,9 +6,10 @@ html
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7', crossorigin='anonymous')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css', integrity='sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r', crossorigin='anonymous')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', integrity='sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS', crossorigin='anonymous')
+    script(src='/javascript/navbar.js')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    nav.navbar.navbar-default.navbar-fixed-top
+    nav.nav.navbar.navbar-default.navbar-fixed-top
       div.container-fluid
         div.navbar-header
           button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
@@ -20,7 +21,7 @@ html
         .collapse.navbar-collapse
           ul.nav.navbar-nav.navbar-right
             block navsections
-            li.active
+            li
               a(href='/') Home
             li
               a(href='/about') About
@@ -32,10 +33,7 @@ html
               a(href='/users') Users
             li
               a(href='/login') Sign up/in
-    div.container
-      page-header
     block content
 
     nav.navbar-fixed-bottom.footer.text-centered
-      div.container-fluid
-        p.text-muted Confident Bagel Inc.
+      p.text-muted Confident Bagel Inc.

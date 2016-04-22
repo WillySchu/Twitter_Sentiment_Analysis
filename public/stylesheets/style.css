@@ -4,7 +4,8 @@ a, a:visited, a:active {
 }
 
 body {
-  padding-bottom: 70px
+  padding-top: 50px;
+  padding-bottom: 70px;
 }
 /*circle {
   -moz-transition: all 0.3s;
@@ -14,7 +15,7 @@ body {
 }*/
 
 circle:hover {
-  stroke: black
+  stroke: black;
 }
 .container {
   max-width: 900px;
@@ -130,10 +131,6 @@ body {
   padding-top: 10px;
 }
 
-.buffer-div {
-  height: 100px;
-}
-
 .board-data {
   height: 100px;
   width: 100%;
@@ -146,4 +143,12 @@ body {
 
 a, a:hover, a:focus, a:visited, a:active {
   text-decoration: none;
+}
+
+.navbar-fixed-bottom {
+  padding: 20px;
+}
+
+.search {
+  padding-top: 25vh;
 }
