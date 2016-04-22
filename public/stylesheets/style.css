@@ -152,3 +152,7 @@ a, a:hover, a:focus, a:visited, a:active {
 .search {
   padding-top: 25vh;
 }
+
+.about-header {
+  padding: 20px;
+}
