@@ -14,11 +14,11 @@ block content
           .col-md-12.text-wireframe
             .col-md-4.board-labels
               h2.text-wireframe.board-data.bg-info
-                a(href='boards/#{board.boardid}')= board.boardname
+                a(href='boards/#{board.boardId}')= board.boardname
                   h4 by&nbsp
                     a(href='users/#{board.userid}')= board.username
             for search in searches
-              if search.board_id === board.boardid
+              if search.board_id === board.boardId
                 .col-md-4.text-wireframe.results.bg-warning
                   = search.key1
         br

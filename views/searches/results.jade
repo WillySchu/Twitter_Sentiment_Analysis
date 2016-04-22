@@ -2,6 +2,19 @@ extends ../layout
 
 block content
   .buffer-div
+<<<<<<< HEAD
+=======
+  if !data
+    form(action='/results/#{id}' method='post')
+      label Add this search to existing board:&nbsp
+      select(name='board')
+        for item in boards
+          option(name='#{item.name}')= item.name
+      input(type='submit' value='Add')
+    form(action='/results' method='post')
+      label Add this search to a new board
+      input(type='submit' value='Add')
+>>>>>>> 5c622ccc7b18be7a3fb5e2396d66ed2144d6e334
   .container
         h1 Twitter Data
         h3= key

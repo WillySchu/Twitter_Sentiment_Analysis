@@ -1,12 +1,14 @@
 extends ../layout
 
 block content
-  h1= boards[0].username
-  a(href='users/#{boards.userid}/edit') Edit
-  a(href='users/#{boards.userid}/delete') Delete
-  for board in boards
-    div
-      h3= board.boardname
-      for search in searches
-        if board.boardid === search.board_id
-          h5= search.key1
+  if boards && boards.length > 0
+    h1= boards[0].username
+    a(href='users/#{boards.userid}/edit') Edit
+    a(href='users/#{boards.userid}/delete') Delete
+    for board in boards
+      div
+        h3= board.boardname
+        if searches
+          for search in searches
+            if board.boardid === search.board_id
+              h5= search.key1
