@@ -2,7 +2,7 @@
 'use strict'
 
 const bubbleChart = () => {
-  const width = 1000;
+  const width = 800;
   const height = 700;
   const tooltip = floatingTooltip('gates_tooltip', 240);
 
@@ -46,8 +46,8 @@ const bubbleChart = () => {
     .range(['#FFEDBC', '#EC7263', '#A75265', '#D9213B','#FEBE7E']);
 
   const radiusScale = d3.scale.pow()
-    .exponent(0.6)
-    .range([2, 90]);
+    .exponent(0.5)
+    .range([2, 50]);
 
 
   const createRealNodes = (rawData) => {
@@ -64,9 +64,6 @@ const bubbleChart = () => {
       })
     })
     console.log(noders);
-    for (var i = 0; i < noders.length; i++) {
-
-    }
     //      id: rawData.id,
     //      radius: radiusScale(+rawData.id),
     //      value: rawData.score,
