@@ -8,7 +8,7 @@ const bubbleChart = () => {
   const center = { x: width/2, y: height/2 };
 
   const yearCenters = {
-    2006: { x: 300, y: height/2 } ,
+    2006: { x: 300, y: height/2 } ,
     2007: { x: 400, y: height/2 },
     2008: { x: 500, y: height/2 },
     2009: { x: 600, y: height/2 },
@@ -48,30 +48,46 @@ const bubbleChart = () => {
     .exponent(0.6)
     .range([2, 90]);
 
-
   const createRealNodes = (rawData) => {
+    const noders = [];
+    const myNodes = rawData.scores.map((d) => {
+      noders.push ({
+        id: noders.length,
+        radius: radiusScale(+d.score),
+        value: d.score,
+        group: d.score,
+        tweet: d.tweet,
+        x: Math.random() * 900,
+        y: Math.random() * 800
+      })
+    })
+    for (var i = 0; i < noders.length; i++) {
 
-    const myNodes = [];
-    myNodes.push({
-         id: rawData.id,
-         radius: radiusScale(rawData.id),
-         value: rawData.score,
-         key1: rawData.key1,
-         tweet: rawData.scores[0].tweet,
-        //  year: myYear,
-        //  group: org[Math.floor(Math.random() * org.length)],
-         x: Math.random() * 900,
-         y: Math.random() * 900
-       });
-    // myNodes.sort((a, b) => { return b.value - a.value })
-    return myNodes;
-  }
+    }
+    //      id: rawData.id,
+    //      radius: radiusScale(+rawData.id),
+    //      value: rawData.score,
+    //      key1: rawData.key1,
+    //      tweet: rawData.scores[0].tweet,
+    //     //  year: myYear,
+    //     //  group: org[Math.floor(Math.random() * org.length)],
+    //      x: Math.random() * 900,
+    //      y: Math.random() * 900
+    //  })
+    //  myNodes = rawData.map((d) => {
+    //    return {
+
+    //   };
+    // });
+    noders.sort((a, b) => { return b.value - a.value })
+    return noders;
+   }
   // const createNodes = (rawData) => {
   //   const myNodes = [];
   //   var org = ['low', 'low2', 'medium', 'med2', 'high'];
   //   for (var i = 0; i < myNodes.length; i++) {
   //     var myValue = (rawData.score);
-  //     var myYear = Math.floor(Math.random() * 5) + 2006;
+  //     var myYear = Math.floor (Math.random() * 5) + 2006;
   //     myNodes.push({
   //       id: i,
   //       radius: radiusScale(+myValue),
@@ -111,7 +127,6 @@ const bubbleChart = () => {
     .range([height, 0]);
 
   const yMap = (d) => { return y(d.id) }
-
   const xAxis = d3.svg.axis()
     .scale(x)
     .orient('middle');
@@ -119,26 +134,24 @@ const bubbleChart = () => {
   const yAxis = d3.svg.axis()
     .scale(y)
     .orient('left');
-
   const chart = (selector, rawData) => {
-    const maxAmount = d3.max(rawData, (d) => { return +d.total_amount; });
+    const maxAmount = d3.max(rawData.scores, (d) => { return +d.score; });
+
     radiusScale.domain([0, maxAmount]);
     nodes = createRealNodes(rawData);
-      force.nodes(nodes);
-      console.log(radiusScale(100))
+    force.nodes(nodes);
       svg = d3.select(selector)
         .append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
       bubbles = svg.selectAll('.bubble')
-        .data(nodes, (d) => { return d.id });
+        .data(nodes, (rawData) => { return rawData.id });
+        console.log(bubbles);
 
         x.domain(d3.extent(nodes.map(node => { return node.value }))).nice();
         y.domain(d3.extent(nodes.map(node => { return node.id }))).nice();
-
       bubbles.enter().append('circle')
         .classed('bubble', true)
         .attr('r', 0)
@@ -151,10 +164,8 @@ const bubbleChart = () => {
        bubbles.transition()
         .duration(2000)
         .attr('r', (d) => { return d.radius; });
-
       groupBubbles();
   };
-
   const groupBubbles = () => {
     hideYears();
     hideAxes();
@@ -167,7 +178,6 @@ const bubbleChart = () => {
 
     force.start();
   }
-
   const moveToCenter = (alpha) => {
     return (d) => {
       d.x = d.x + (center.x - d.x) * damper * alpha * 1.1;
@@ -185,7 +195,6 @@ const bubbleChart = () => {
     });
     force.start();
   }
-
   const moveToYears = (alpha) => {
     return (d) => {
       const target = yearCenters[d.year];
@@ -202,7 +211,6 @@ const bubbleChart = () => {
       .call(xAxis)
       .attr('x', width)
       .attr('y', -6);
-
     svg.append('g')
       .attr('class', 'y axis')
       .call(yAxis);
@@ -211,7 +219,6 @@ const bubbleChart = () => {
       bubbles.each(moveToAxes(e.alpha))
       .attr('cx', (d) => { console.log(d.x); return d.x; })
       .attr('cy', (d) => { console.log(d.y); return d.y; });
-
       // .attr('cx', (d) => { console.log(x(d.value)); return x(d.value) })
       // .attr('cy', (d) => { console.log(y(d.id)); return y(d.id) })
     });
@@ -226,7 +233,6 @@ const bubbleChart = () => {
       d.y = d.y + (y(d.id) - d.y) * damper * alpha * 1.1;
     };
   }
-
   const hideYears = () => {
     svg.selectAll('.year').remove();
   }
@@ -234,7 +240,6 @@ const bubbleChart = () => {
   const hideAxes = () => {
     svg.selectAll('g').remove();
   }
-
   const showYears = () => {
     const yearsData = d3.keys(yearsTitleX);
     const years = svg.selectAll('.year')
@@ -247,7 +252,6 @@ const bubbleChart = () => {
         .attr('text-anchor', 'middle')
         .text((d) => { return d; });
   }
-
   const showDetail = (d) => {
     // d3.select(this).attr('stroke', 'black');
 
@@ -262,14 +266,12 @@ const bubbleChart = () => {
                   '</span>';
     tooltip.showTooltip(content, d3.event);
   }
-
   const hideDetail = (d) => {
     // d3.select(this)
     //   .attr('stroke', d3.rgb(fillColor(d.group)).darker());
 
     tooltip.hideTooltip();
   }
-
   chart.toggleDisplay = (displayName) => {
     if (displayName === 'year') {
       splitBubbles();
@@ -282,9 +284,7 @@ const bubbleChart = () => {
   return chart;
 }
 
-
 const myBubbleChart = bubbleChart();
-
 const display = (error, data) => {
   if (error) {
     console.log(error);
@@ -292,7 +292,6 @@ const display = (error, data) => {
 
   myBubbleChart('#vis', data);
 }
-
 const setupButtons = () => {
   d3.select('#toolbar')
     .selectAll('.button')
@@ -301,13 +300,11 @@ const setupButtons = () => {
       const button = d3.select(this);
 
       button.classed('active', true);
-
       const buttonId = button.attr('id');
 
       myBubbleChart.toggleDisplay(buttonId);
     });
 }
-
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
@@ -327,7 +324,6 @@ const addCommas = (nStr) => {
   while (rgx.test(x1)) {
     x1 = x1.replace(rgx, '$1' + ',' + '$2');
   }
-
   return x1 + x2;
 }
 const url = '/api?searchId=' + getParameterByName('searchId');
