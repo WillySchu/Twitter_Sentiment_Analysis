@@ -1,7 +1,7 @@
 'use strict'
 
 const bubbleChart = () => {
-  const width = 800;
+  const width = 900;
   const height = 700;
   const tooltip = floatingTooltip('gates_tooltip', 240);
 
@@ -28,7 +28,7 @@ const bubbleChart = () => {
 
   const radiusScale = d3.scale.pow()
     .exponent(0.5)
-    .range([2, 50]);
+    .range([2, 40]);
 
   const createRealNodes = (rawData) => {
     const noders = [];
@@ -38,32 +38,34 @@ const bubbleChart = () => {
       } else {
         d.radius = 0.2
       }
-
+      const created = new Date(Date.parse(d.tweet.created_at)).getTime();
+      console.log(created);
       noders.push ({
         id: noders.length,
         radius: radiusScale(+Math.abs(d.radius)),
         value: d.score,
         group: d.score,
         tweet: d.tweet,
-        x: Math.random() * 900,
-        y: Math.random() * 800
+        created: created,
+        // x: Math.random() * 900,
+        // y: Math.random() * 800
       })
     })
     noders.sort((a, b) => { return b.value - a.value })
     return noders;
   }
 
-  const margin = {top: 20, right: 20, bottom: 30, left: 40};
+  const margin = {top: 20, right: 20, bottom: 30, left: 30};
 
   const x = d3.scale.linear()
-    .range([0, width]);
+    .range([margin.left + 40, width - margin.left - margin.right - 40]);
 
-  const xMap = (d) => { return x(d.value) }
+  // const xMap = (d) => { console.log(d); return x(d.id) }
 
   const y = d3.scale.linear()
-    .range([height, 0]);
+    .range([height - margin.top - margin.bottom - 40, margin.bottom + 40]);
 
-  const yMap = (d) => { return y(d.id) }
+  // const yMap = (d) => { console.log(d);return y(d.value) }
 
   const xAxis = d3.svg.axis()
     .scale(x)
@@ -82,7 +84,7 @@ const bubbleChart = () => {
 
     yearCenters = {};
     for (var i = 0; i < sortedSkorz.length; i++) {
-      yearCenters[sortedSkorz[i]] = {x: 300 + 100 * i, y: height / 2}
+      yearCenters[sortedSkorz[i]] = {x: 200 + 100 * i, y: height/2}
     }
 
     const fillColor = d3.scale.ordinal()
@@ -91,37 +93,41 @@ const bubbleChart = () => {
 
       yearsTitleX = {};
       for (var i = 0; i < sortedSkorz.length; i++) {
-        yearsTitleX[sortedSkorz[i]] = width / ((sortedSkorz.length + 2) / (i + 1));
+        yearsTitleX[sortedSkorz[i]] = width / ((sortedSkorz.length + 1) / (i + 1));
       }
+
     radiusScale.domain([0, maxAmount]);
     nodes = createRealNodes(rawData);
+
+    x.domain(d3.extent(nodes.map(node => { return node.created }))).nice();
+    y.domain(d3.extent(nodes.map(node => { return node.value }))).nice();
+
     force.nodes(nodes);
-      svg = d3.select(selector)
-        .append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+    svg = d3.select(selector)
+      .append('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .classed('svg-content-responsive', true)
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-      bubbles = svg.selectAll('.bubble')
-        .data(nodes, (rawData) => { return rawData.id });
-        x.domain(d3.extent(nodes.map(node => { return node.value }))).nice();
-        y.domain(d3.extent(nodes.map(node => { return node.id }))).nice();
+    bubbles = svg.selectAll('.bubble')
+      .data(nodes, (rawData) => { return rawData.id });
 
-      bubbles.enter().append('circle')
-        .classed('bubble', true)
-        .attr('r', 0)
-        .attr('fill', (d) => { return fillColor(d.value); })
-        .attr('stroke', (d) => { return d3.rgb(fillColor(d.value)).darker(); })
-        .attr('stroke-width', 0.3)
-        .on('mouseover', showDetail)
-        .on('mouseout', hideDetail);
+    bubbles.enter().append('circle')
+      .classed('bubble', true)
+      .attr('r', 0)
+      .attr('fill', (d) => { return fillColor(d.value); })
+      .attr('stroke', (d) => { return d3.rgb(fillColor(d.value)).darker(); })
+      .attr('stroke-width', 0.3)
+      .on('mouseover', showDetail)
+      .on('mouseout', hideDetail);
 
-       bubbles.transition()
-        .duration(2000)
-        .attr('r', (d) => { return d.radius; });
+     bubbles.transition()
+      .duration(2000)
+      .attr('r', (d) => { return d.radius; });
 
-      groupBubbles();
+    groupBubbles();
   };
 
   const groupBubbles = () => {
@@ -170,7 +176,7 @@ const bubbleChart = () => {
       .attr('transform', 'translate(0,' + height +')')
       .call(xAxis)
       .attr('x', width)
-      .attr('y', -6);
+      .attr('y', height);
 
     svg.append('g')
       .attr('class', 'y axis')
@@ -185,11 +191,9 @@ const bubbleChart = () => {
   }
 
   const moveToAxes = (alpha) => {
-    // x(d.value)
-    // y(d.id)
     return (d) => {
-      d.x = d.x + (x(d.value) - d.x) * damper * alpha * 1.1;
-      d.y = d.y + (y(d.id) - d.y) * damper * alpha * 1.1;
+      d.x = d.x + (x(d.created) - d.x) * damper * alpha * 1.1;
+      d.y = d.y + (y(d.value) - d.y) * damper * alpha * 1.1;
     };
   }
 
@@ -203,7 +207,6 @@ const bubbleChart = () => {
 
   const showYears = () => {
     const yearsData = d3.keys(yearsTitleX);
-    console.log(yearsData);
     const years = svg.selectAll('.year')
       .data(yearsData);
 
@@ -216,12 +219,10 @@ const bubbleChart = () => {
   }
 
   const showDetail = (d) => {
-    // d3.select(this).attr('stroke', 'black');
-
-    const content = '<span class="name">Title: </span><span class="value">' +
-                  d.name +
+    const content = '<span class="name">Tweet: </span><span class="value">' +
+                  d.tweet.text +
                   '</span><br/>' +
-                  '<span class="name">Amount: </span><span class="value">$' +
+                  '<span class="name">Score: </span><span class="value">' +
                   addCommas(d.value) +
                   '</span><br/>' +
                   '<span class="name">Year: </span><span class="value">' +
@@ -231,9 +232,6 @@ const bubbleChart = () => {
   }
 
   const hideDetail = (d) => {
-    // d3.select(this)
-    //   .attr('stroke', d3.rgb(fillColor(d.group)).darker());
-
     tooltip.hideTooltip();
   }
 
@@ -249,7 +247,6 @@ const bubbleChart = () => {
 
   return chart;
 }
-
 
 const myBubbleChart = bubbleChart();
 

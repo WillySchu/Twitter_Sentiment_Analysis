@@ -13,6 +13,11 @@ body {
   transition: all 0.3s;
 }*/
 
+.svg-content-responsive {
+    display: inline-block;
+    position: relative;
+}
+
 circle:hover {
   stroke: black
 }
