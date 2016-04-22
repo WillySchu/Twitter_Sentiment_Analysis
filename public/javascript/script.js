@@ -40,34 +40,49 @@ const bubbleChart = () => {
   .friction(0.9);
 
   const fillColor = d3.scale.ordinal()
-    .domain(['low', 'low2', 'medium', 'med2', 'high'])
+    // .domain(['low', 'low2', 'medium', 'med2', 'high'])
+    .domain([-2, -1, 0, 1, 2])
     .range(['#FFEDBC', '#EC7263', '#A75265', '#D9213B','#FEBE7E']);
 
   const radiusScale = d3.scale.pow()
     .exponent(0.6)
     .range([2, 90]);
 
-  const fetchData = (callback) => {
-    // $.get('sdfsdf', data => {
-    callback(createNodes());
-    // })
-  }
-  const createNodes = (rawData) => {
+
+  const createRealNodes = (rawData) => {
+
     const myNodes = [];
-    var org = ['low', 'low2', 'medium', 'med2', 'high'];
-    for (var i = 0; i < 150; i++) {
-      var myValue = (Math.random() * 10000000) + 1000000;
-      var myYear = Math.floor(Math.random() * 5) + 2006;
-      myNodes.push({
-        id: i,
-        radius: radiusScale(+myValue),
-        value: myValue,
-        year: myYear,
-        group: org[Math.floor(Math.random() * org.length)],
-        x: Math.random() * 900,
-        y: Math.random() * 900
-      });
-    }
+    myNodes.push({
+         id: rawData.id,
+         radius: radiusScale(rawData.id),
+         value: rawData.score,
+         key1: rawData.key1,
+         tweet: rawData.scores[0].tweet,
+        //  year: myYear,
+        //  group: org[Math.floor(Math.random() * org.length)],
+         x: Math.random() * 900,
+         y: Math.random() * 900
+       });
+    // myNodes.sort((a, b) => { return b.value - a.value })
+    return myNodes;
+  }
+  // const createNodes = (rawData) => {
+  //   const myNodes = [];
+  //   var org = ['low', 'low2', 'medium', 'med2', 'high'];
+  //   for (var i = 0; i < myNodes.length; i++) {
+  //     var myValue = (rawData.score);
+  //     var myYear = Math.floor(Math.random() * 5) + 2006;
+  //     myNodes.push({
+  //       id: i,
+  //       radius: radiusScale(+myValue),
+  //       value: myValue,
+  //       key1: key1,
+  //       year: myYear,
+  //       group: org[Math.floor(Math.random() * org.length)],
+  //       x: Math.random() * 900,
+  //       y: Math.random() * 900
+  //     });
+  //   }
     // const myNodes = rawData.map((d) => {
     //   return {
     //     id: d.id,
@@ -81,9 +96,9 @@ const bubbleChart = () => {
     //     y: Math.random() * 800
     //  };
   //  });
-   myNodes.sort((a, b) => { return b.value - a.value })
-   return myNodes;
-  }
+  //  myNodes.sort((a, b) => { return b.value - a.value })
+  //  return myNodes;
+  // }
 
   const margin = {top: 20, right: 20, bottom: 30, left: 40};
 
@@ -99,7 +114,7 @@ const bubbleChart = () => {
 
   const xAxis = d3.svg.axis()
     .scale(x)
-    .orient('bottom');
+    .orient('middle');
 
   const yAxis = d3.svg.axis()
     .scale(y)
@@ -108,10 +123,9 @@ const bubbleChart = () => {
   const chart = (selector, rawData) => {
     const maxAmount = d3.max(rawData, (d) => { return +d.total_amount; });
     radiusScale.domain([0, maxAmount]);
-    fetchData(function() {
-      nodes = createNodes(rawData);
+    nodes = createRealNodes(rawData);
       force.nodes(nodes);
-
+      console.log(radiusScale(100))
       svg = d3.select(selector)
         .append('svg')
         .attr('width', width + margin.left + margin.right)
@@ -128,8 +142,8 @@ const bubbleChart = () => {
       bubbles.enter().append('circle')
         .classed('bubble', true)
         .attr('r', 0)
-        .attr('fill', (d) => { return fillColor(d.group); })
-        .attr('stroke', (d) => { return d3.rgb(fillColor(d.group)).darker(); })
+        .attr('fill', (d) => { return fillColor(d.value); })
+        .attr('stroke', (d) => { return d3.rgb(fillColor(d.value)).darker(); })
         .attr('stroke-width', 0.3)
         .on('mouseover', showDetail)
         .on('mouseout', hideDetail);
@@ -139,7 +153,6 @@ const bubbleChart = () => {
         .attr('r', (d) => { return d.radius; });
 
       groupBubbles();
-    });
   };
 
   const groupBubbles = () => {
@@ -269,6 +282,7 @@ const bubbleChart = () => {
   return chart;
 }
 
+
 const myBubbleChart = bubbleChart();
 
 const display = (error, data) => {
@@ -294,6 +308,16 @@ const setupButtons = () => {
     });
 }
 
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 const addCommas = (nStr) => {
   nStr += '';
   var x = nStr.split('.');
@@ -306,7 +330,7 @@ const addCommas = (nStr) => {
 
   return x1 + x2;
 }
-
-d3.csv('data/gates_money.csv', display);
+const url = '/api?searchId=' + getParameterByName('searchId');
+d3.json(url, display);
 
 setupButtons();

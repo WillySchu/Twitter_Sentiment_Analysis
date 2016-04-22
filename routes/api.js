@@ -9,6 +9,7 @@ function Searches() {
 }
 
 router.get('/', (req, res, next) => {
+  console.log('wtf');
   Searches().where({id: req.query.searchId}).first().then(search => {
     res.send(search);
   });
