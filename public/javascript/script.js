@@ -1,3 +1,4 @@
+
 'use strict'
 
 const bubbleChart = () => {
@@ -50,28 +51,46 @@ const bubbleChart = () => {
 
 
   const createRealNodes = (rawData) => {
+    const noders = [];
+    const myNodes = rawData.scores.map((d) => {
+      noders.push ({
+        id: noders.length,
+        radius: radiusScale(+d.score),
+        value: d.score,
+        group: d.score,
+        tweet: d.tweet,
+        x: Math.random() * 900,
+        y: Math.random() * 800
+      })
+    })
+    console.log(noders);
+    for (var i = 0; i < noders.length; i++) {
 
-    const myNodes = [];
-    myNodes.push({
-         id: rawData.id,
-         radius: radiusScale(rawData.id),
-         value: rawData.score,
-         key1: rawData.key1,
-         tweet: rawData.scores[0].tweet,
-        //  year: myYear,
-        //  group: org[Math.floor(Math.random() * org.length)],
-         x: Math.random() * 900,
-         y: Math.random() * 900
-       });
-    // myNodes.sort((a, b) => { return b.value - a.value })
-    return myNodes;
-  }
+    }
+    //      id: rawData.id,
+    //      radius: radiusScale(+rawData.id),
+    //      value: rawData.score,
+    //      key1: rawData.key1,
+    //      tweet: rawData.scores[0].tweet,
+    //     //  year: myYear,
+    //     //  group: org[Math.floor(Math.random() * org.length)],
+    //      x: Math.random() * 900,
+    //      y: Math.random() * 900
+    //  })
+    //  myNodes = rawData.map((d) => {
+    //    return {
+
+    //   };
+    // });
+    noders.sort((a, b) => { return b.value - a.value })
+    return noders;
+   }
   // const createNodes = (rawData) => {
   //   const myNodes = [];
   //   var org = ['low', 'low2', 'medium', 'med2', 'high'];
   //   for (var i = 0; i < myNodes.length; i++) {
   //     var myValue = (rawData.score);
-  //     var myYear = Math.floor(Math.random() * 5) + 2006;
+  //     var myYear = Math.floor (Math.random() * 5) + 2006;
   //     myNodes.push({
   //       id: i,
   //       radius: radiusScale(+myValue),
@@ -121,11 +140,12 @@ const bubbleChart = () => {
     .orient('left');
 
   const chart = (selector, rawData) => {
-    const maxAmount = d3.max(rawData, (d) => { return +d.total_amount; });
+    const maxAmount = d3.max(rawData.scores, (d) => { return +d.score; });
+
     radiusScale.domain([0, maxAmount]);
     nodes = createRealNodes(rawData);
-      force.nodes(nodes);
-      console.log(radiusScale(100))
+    console.log(nodes);
+    force.nodes(nodes);
       svg = d3.select(selector)
         .append('svg')
         .attr('width', width + margin.left + margin.right)
@@ -134,8 +154,7 @@ const bubbleChart = () => {
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
       bubbles = svg.selectAll('.bubble')
-        .data(nodes, (d) => { return d.id });
-
+        .data(nodes, (rawData) => { return rawData.id });
         x.domain(d3.extent(nodes.map(node => { return node.value }))).nice();
         y.domain(d3.extent(nodes.map(node => { return node.id }))).nice();
 
