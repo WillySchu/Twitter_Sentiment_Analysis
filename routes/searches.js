@@ -114,4 +114,8 @@ router.get('/new/:id', (req, res, next) => {
   });
 });
 
+router.get('/:id', (req, res, next) => {
+  res.redirect('/searches/results?searchId=' + req.params.id);
+})
+
 module.exports = router;

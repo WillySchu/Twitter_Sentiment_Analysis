@@ -28,18 +28,10 @@ router.get('/', (req, res, next) => {
     .select('searches.key1', 'boards_searches.search_id', 'boards_searches.board_id')
     .then(searches => {
       res.render('boards/index', {boards, searches});
+      console.log(searches);
     });
   });
 });
 
-router.get('/:id', (req, res, next) => {
-  Boards()
-  .where('boards.id', req.params.id)
-  .join('boards_searches', 'boards_searches.board_id', '=', 'boards.id')
-  .join('searches', 'searches.id', '=', 'boards_searches.search_id')
-  .then(data => {
-    res.render('boards/show', {data});
-  });
-});
 
 module.exports = router;
