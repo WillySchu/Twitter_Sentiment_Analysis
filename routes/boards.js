@@ -29,7 +29,7 @@ router.get('/new', (req, res, next) => {
 router.get('/', (req, res, next) => {
   Users()
   .join('boards', 'boards.user_id', '=', 'users.id')
-  .select('users.name as username', 'users.id as userid', 'boards.name as boardname', 'boards.id as boardid')
+  .select('users.name as username', 'users.id as userid', 'boards.name as boardname', 'boards.id as boardId')
   .then(boards => {
     Searches()
     .join('boards_searches', 'boards_searches.search_id', '=', 'searches.id')
@@ -46,7 +46,6 @@ router.get('/:id', (req, res, next) => {
   .join('boards_searches', 'boards_searches.board_id', '=', 'boards.id')
   .join('searches', 'searches.id', '=', 'boards_searches.search_id')
   .then(data => {
-    console.log(data)
     res.render('boards/show', {data});
   });
 });
