@@ -73,7 +73,7 @@ router.post('/results', (req, res, next) => {
             .join('boards_searches', 'boards_searches.board_id', '=', 'boards.id')
             .join('searches', 'searches.id', '=', 'boards_searches.search_id')
             .then(data => {
-              res.render('boards/show', {data});
+              res.redirect('/');
             });
           });
         })
@@ -95,7 +95,7 @@ router.post('/results', (req, res, next) => {
             .join('boards_searches', 'boards_searches.board_id', '=', 'boards.id')
             .join('searches', 'searches.id', '=', 'boards_searches.search_id')
             .then(data => {
-              res.render('boards/show', {data});
+              res.redirect('/');
             });
           });
         })
