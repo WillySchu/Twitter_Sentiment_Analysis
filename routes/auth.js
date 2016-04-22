@@ -17,8 +17,8 @@ router.get('/github/callback',
 );
 
 router.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/')
+  req.session = null;
+  res.redirect('/');
 });
 
 router.get('/login', (req, res, next) => {

@@ -32,8 +32,12 @@ html
               a(href='/boards') Boards
             li
               a(href='/users') Users
-            li
-              a(href='/login') Sign up/in
+            if user
+              li
+                a(href='/auth/logout') Sign out
+            else
+              li
+                a(href='/login') Sign up/in
     block content
 
     nav.navbar-fixed-bottom.footer.text-centered

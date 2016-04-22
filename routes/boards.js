@@ -28,7 +28,6 @@ router.get('/', (req, res, next) => {
     .select('searches.key1', 'boards_searches.search_id', 'boards_searches.board_id')
     .then(searches => {
       res.render('boards/index', {boards, searches});
-      console.log(searches);
     });
   });
 });
