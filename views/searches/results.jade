@@ -3,14 +3,17 @@ extends ../layout
 block content
   .buffer-div
   if !data
-    form(action='/results/#{id}' method='post')
+    form(action='results' method='post')
       label Add this search to existing board:&nbsp
       select(name='board')
         for item in boards
-          option(name='#{item.name}')= item.name
+          option(value='#{item.name}')= item.name
       input(type='submit' value='Add')
-    form(action='/results' method='post')
-      label Add this search to a new board
+    | Add this search to a new board
+    form(action='results' method='post')
+      label Name
+      input(type='text' name='boardname')
+      input(type='hidden' name='creator' value='#{user}')
       input(type='submit' value='Add')
   .container
         h1 Twitter Data
