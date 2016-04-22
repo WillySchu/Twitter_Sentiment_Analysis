@@ -32,7 +32,7 @@ router.post('/', (req, res, next) => {
 
 router.get('/results', (req, res, next) => {
   res.render('searches/results')
-})
+});
 
 router.get('/new/:id', (req, res, next) => {
   Boards().first()
