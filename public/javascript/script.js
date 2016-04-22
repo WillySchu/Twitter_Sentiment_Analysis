@@ -173,7 +173,7 @@ const bubbleChart = () => {
     hideYears();
     svg.append('g')
       .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + height - 50 +')')
+      .attr('transform', 'translate(0,' + height + 100 +')')
       .call(xAxis)
       .attr('x', width)
       .attr('y', height);
@@ -224,10 +224,7 @@ const bubbleChart = () => {
                   '</span><br/>' +
                   '<span class="name">Score: </span><span class="value">' +
                   addCommas(d.value) +
-                  '</span><br/>' +
-                  '<span class="name">Year: </span><span class="value">' +
-                  d.year +
-                  '</span>';
+                  '</span><br/>' 
     tooltip.showTooltip(content, d3.event);
   }
 

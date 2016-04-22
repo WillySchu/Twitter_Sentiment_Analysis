@@ -6,8 +6,7 @@ block content
     for board in boards
       .panel.panel-default
         .panel-heading
-          h2.panel-title
-            a(href='/boards/#{board.boardId}')= board.boardname
+          h2.panel-title= board.boardname
         table.table
           tr
             th Search ID
