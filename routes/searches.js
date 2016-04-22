@@ -86,7 +86,7 @@ router.post('/results', (req, res, next) => {
       console.log(req.user);
       Searches().first().orderBy('id', 'desc').then(search => {
         console.log(search);
-        Boards().insert({user_id: req.user[0].id, name: req.body.boardname}).returning('*').then(board => {
+        Boards().insert({user_id: req.user.id, name: req.body.boardname}).returning('*').then(board => {
           console.log(board);
           Boards_searches().insert({board_id: board[0].id, search_id: parseInt(search.id)}).returning('board_id').then(boardId => {
             console.log(boardId);

@@ -4,16 +4,17 @@ block content
 
   .container
     .row
-
       if !data
-        form(action='/results/#{id}' method='post')
+        form(action='results' method='post')
           label Add this search to existing board:&nbsp
           select(name='board')
             for item in boards
               option(name='#{item.name}')= item.name
           input(type='submit' value='Add')
-        form(action='/results' method='post')
+        form(action='results' method='post')
           label Add this search to a new board
+          input(type='text' name='boardname')
+          input(type='hidden' name='creator' value='#{user}')
           input(type='submit' value='Add')
     .row
       h1 Twitter Data
