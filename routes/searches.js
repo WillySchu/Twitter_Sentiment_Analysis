@@ -46,7 +46,7 @@ router.post('/', (req, res, next) => {
 
 router.get('/results', (req, res, next) => {
   if (req.query.boardId) {
-    Boards().first().where('id', req.query.boardId).then(data => {
+    Boards().first().where('id', '=', req.query.boardId).then(data => {
       res.render('searches/results', {data: data, searchId: req.query.searchId, boardId: req.query.boardId});
     });
   } else {
@@ -61,6 +61,12 @@ router.get('/results', (req, res, next) => {
     });
   }
 });
+
+// router.post('/results', (req, res, next) => {
+//   Boards_searches().insert({board_id: parseInt(req.body.boardId), search_id: parseInt(id)}).returning('board_id').then(boardId => {
+//     res.redirect('searches/results?searchId=' + id[0] + '&boardId=' + boardId);
+//   });
+// });
 
 router.get('/new/:id', (req, res, next) => {
   Boards().first()
