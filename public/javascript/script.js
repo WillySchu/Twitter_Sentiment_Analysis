@@ -47,31 +47,25 @@ const bubbleChart = () => {
     .exponent(0.6)
     .range([2, 90]);
 
-  const fetchData = (callback) => {
-    // $.get('sdfsdf', data => {
-    callback(createNodes());
-    // })
-  }
-  const url = '/api/' + getParameterByName('searchId')
-  d3.json(url)
-  console.log(url);
 
-  const createNodes = (rawData) => {
-    const myNodes = [];
-    var org = ['low', 'low2', 'medium', 'med2', 'high'];
-    for (var i = -100; i < 150; i++) {
-      var myValue = (Math.random() * 10000000) + 1000000;
-      var myYear = Math.floor(Math.random() * 5) + 2006;
-      myNodes.push({
-        id: i,
-        radius: radiusScale(+myValue),
-        value: myValue,
-        year: myYear,
-        group: org[Math.floor(Math.random() * org.length)],
-        x: Math.random() * 900,
-        y: Math.random() * 900
-      });
-    }
+
+  // const createNodes = (rawData) => {
+  //   const myNodes = [];
+  //   var org = ['low', 'low2', 'medium', 'med2', 'high'];
+  //   for (var i = 0; i < myNodes.length; i++) {
+  //     var myValue = (rawData.score);
+  //     var myYear = Math.floor(Math.random() * 5) + 2006;
+  //     myNodes.push({
+  //       id: i,
+  //       radius: radiusScale(+myValue),
+  //       value: myValue,
+  //       key1: key1,
+  //       year: myYear,
+  //       group: org[Math.floor(Math.random() * org.length)],
+  //       x: Math.random() * 900,
+  //       y: Math.random() * 900
+  //     });
+  //   }
     // const myNodes = rawData.map((d) => {
     //   return {
     //     id: d.id,
@@ -113,7 +107,12 @@ const bubbleChart = () => {
     const maxAmount = d3.max(rawData, (d) => { return +d.total_amount; });
     radiusScale.domain([0, maxAmount]);
     fetchData(function() {
-      nodes = createNodes(rawData);
+      const url = '/api?searchId=' + getParameterByName('searchId')
+        d3.json(url, (err, json) => {
+          nodes = json;
+          callback()
+        })
+      nodes = theData;
       force.nodes(nodes);
 
       svg = d3.select(selector)
@@ -270,8 +269,8 @@ const bubbleChart = () => {
       groupBubbles();
     }
   };
-  return chart;
-}
+  // return chart;
+
 
 const myBubbleChart = bubbleChart();
 
@@ -320,7 +319,5 @@ const addCommas = (nStr) => {
 
   return x1 + x2;
 }
-
-d3.csv('data/gates_money.csv', display);
 
 setupButtons();
