@@ -79,7 +79,7 @@ router.post('/results', (req, res, next) => {
         })
       });
     } else {
-      res.redirect('login')
+      res.redirect('/login')
     }
   } else {
     if (req.user) {
