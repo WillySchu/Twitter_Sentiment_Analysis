@@ -24,7 +24,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
   Users()
-  .where('users.id', req.params.id)
+  .where({'users.id': req.params.id})
   .join('boards', 'boards.user_id', '=', 'users.id')
   .select('users.name as username', 'users.id as userid', 'boards.name as boardname', 'boards.id as boardid')
   .then(boards => {
