@@ -1,4 +1,3 @@
-
 'use strict'
 
 const bubbleChart = () => {
@@ -8,27 +7,14 @@ const bubbleChart = () => {
 
   const center = { x: width/2, y: height/2 };
 
-  const yearCenters = {
-    2006: { x: 300, y: height/2 } ,
-    2007: { x: 400, y: height/2 },
-    2008: { x: 500, y: height/2 },
-    2009: { x: 600, y: height/2 },
-    2010: { x: 700, y: height/2 }
-  };
-
-  const yearsTitleX = {
-    2006: width/7,
-    2007: width/3,
-    2008: width/2,
-    2009: width/1.5,
-    2010: width/1.2
-  }
-
   const damper = 0.102;
 
   let svg = null;
   let bubbles = null;
   let nodes = [];
+  let sortedSkorz = null;
+  let yearsTitleX = null;
+  let yearCenters = null;
 
   const charge = (d) => {
     return -Math.pow(d.radius, 2.0)/9
@@ -40,22 +26,22 @@ const bubbleChart = () => {
   .gravity(-0.001)
   .friction(0.9);
 
-  const fillColor = d3.scale.ordinal()
-    // .domain(['low', 'low2', 'medium', 'med2', 'high'])
-    .domain([-2, -1, 0, 1, 2])
-    .range(['#FFEDBC', '#EC7263', '#A75265', '#D9213B','#FEBE7E']);
-
   const radiusScale = d3.scale.pow()
     .exponent(0.5)
     .range([2, 50]);
 
-
   const createRealNodes = (rawData) => {
     const noders = [];
     const myNodes = rawData.scores.map((d) => {
+      if (d.score) {
+        d.radius = d.score
+      } else {
+        d.radius = 0.2
+      }
+
       noders.push ({
         id: noders.length,
-        radius: radiusScale(+d.score),
+        radius: radiusScale(+Math.abs(d.radius)),
         value: d.score,
         group: d.score,
         tweet: d.tweet,
@@ -63,58 +49,9 @@ const bubbleChart = () => {
         y: Math.random() * 800
       })
     })
-    console.log(noders);
-    //      id: rawData.id,
-    //      radius: radiusScale(+rawData.id),
-    //      value: rawData.score,
-    //      key1: rawData.key1,
-    //      tweet: rawData.scores[0].tweet,
-    //     //  year: myYear,
-    //     //  group: org[Math.floor(Math.random() * org.length)],
-    //      x: Math.random() * 900,
-    //      y: Math.random() * 900
-    //  })
-    //  myNodes = rawData.map((d) => {
-    //    return {
-
-    //   };
-    // });
     noders.sort((a, b) => { return b.value - a.value })
     return noders;
-   }
-  // const createNodes = (rawData) => {
-  //   const myNodes = [];
-  //   var org = ['low', 'low2', 'medium', 'med2', 'high'];
-  //   for (var i = 0; i < myNodes.length; i++) {
-  //     var myValue = (rawData.score);
-  //     var myYear = Math.floor (Math.random() * 5) + 2006;
-  //     myNodes.push({
-  //       id: i,
-  //       radius: radiusScale(+myValue),
-  //       value: myValue,
-  //       key1: key1,
-  //       year: myYear,
-  //       group: org[Math.floor(Math.random() * org.length)],
-  //       x: Math.random() * 900,
-  //       y: Math.random() * 900
-  //     });
-  //   }
-    // const myNodes = rawData.map((d) => {
-    //   return {
-    //     id: d.id,
-    //     radius: radiusScale(+d.total_amount),
-    //     value: d.total_amount,
-    //     name: d.grant_title,
-    //     org: d.organization,
-    //     group: d.group,
-    //     year: d.start_year,
-    //     x: Math.random() * 900,
-    //     y: Math.random() * 800
-    //  };
-  //  });
-  //  myNodes.sort((a, b) => { return b.value - a.value })
-  //  return myNodes;
-  // }
+  }
 
   const margin = {top: 20, right: 20, bottom: 30, left: 40};
 
@@ -130,7 +67,7 @@ const bubbleChart = () => {
 
   const xAxis = d3.svg.axis()
     .scale(x)
-    .orient('middle');
+    .orient('bottom');
 
   const yAxis = d3.svg.axis()
     .scale(y)
@@ -138,10 +75,26 @@ const bubbleChart = () => {
 
   const chart = (selector, rawData) => {
     const maxAmount = d3.max(rawData.scores, (d) => { return +d.score; });
+    const skorz = getScores(rawData.scores);
+      sortedSkorz = skorz.sort((a, b) => {
+        return a - b;
+      });
 
+    yearCenters = {};
+    for (var i = 0; i < sortedSkorz.length; i++) {
+      yearCenters[sortedSkorz[i]] = {x: 300 + 100 * i, y: height / 2}
+    }
+
+    const fillColor = d3.scale.ordinal()
+      .domain(sortedSkorz)
+      .range(['#FFEDBC', '#FEBE7E', '#EC7263', '#A75265', '#D9213B']);
+
+      yearsTitleX = {};
+      for (var i = 0; i < sortedSkorz.length; i++) {
+        yearsTitleX[sortedSkorz[i]] = width / ((sortedSkorz.length + 2) / (i + 1));
+      }
     radiusScale.domain([0, maxAmount]);
     nodes = createRealNodes(rawData);
-    console.log(nodes);
     force.nodes(nodes);
       svg = d3.select(selector)
         .append('svg')
@@ -204,7 +157,7 @@ const bubbleChart = () => {
 
   const moveToYears = (alpha) => {
     return (d) => {
-      const target = yearCenters[d.year];
+      const target = yearCenters[d.value];
       d.x = d.x + (target.x - d.x) * damper * alpha * 1.1;
       d.y = d.y + (target.y - d.y) * damper * alpha * 1.1;
     };
@@ -225,11 +178,8 @@ const bubbleChart = () => {
 
     force.on('tick', (e) => {
       bubbles.each(moveToAxes(e.alpha))
-      .attr('cx', (d) => { console.log(d.x); return d.x; })
-      .attr('cy', (d) => { console.log(d.y); return d.y; });
-
-      // .attr('cx', (d) => { console.log(x(d.value)); return x(d.value) })
-      // .attr('cy', (d) => { console.log(y(d.id)); return y(d.id) })
+      .attr('cx', (d) => { return d.x; })
+      .attr('cy', (d) => { return d.y; });
     });
     force.start();
   }
@@ -253,6 +203,7 @@ const bubbleChart = () => {
 
   const showYears = () => {
     const yearsData = d3.keys(yearsTitleX);
+    console.log(yearsData);
     const years = svg.selectAll('.year')
       .data(yearsData);
 
@@ -295,6 +246,7 @@ const bubbleChart = () => {
       groupBubbles();
     }
   };
+
   return chart;
 }
 
@@ -332,6 +284,16 @@ function getParameterByName(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function getScores(arr) {
+  const scores = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (scores.indexOf(arr[i].score) === -1) {
+      scores.push(arr[i].score)
+    }
+  }
+  return scores;
 }
 
 const addCommas = (nStr) => {
