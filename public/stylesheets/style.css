@@ -161,3 +161,7 @@ a, a:hover, a:focus, a:visited, a:active {
 .about-header {
   padding: 20px;
 }
+
+.signin {
+  display: inline-block;
+}
