@@ -23,6 +23,7 @@
     "passport-github2": "^0.1.10",
     "pg": "^4.5.3",
     "python-shell": "^0.4.0",
+    "request-promise": "^3.0.0",
     "sentiment": "^1.0.6",
     "serve-favicon": "~2.3.0",
     "twitter": "^1.2.5",
