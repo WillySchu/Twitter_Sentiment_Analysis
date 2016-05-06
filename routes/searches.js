@@ -24,7 +24,7 @@ router.get('/new', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
   if (req.body.boardId) {
-    searchTwitter(req.body.keyword, 50, (tweets) => {
+    searchTwitter(req.body.keyword, 1, (tweets) => {
       sentiment.slow(tweets, (results) => {
         Searches().insert({key1: req.body.keyword, scores: JSON.stringify(results)}).returning('id').then(id => {
           Boards_searches().insert({board_id: parseInt(req.body.boardId), search_id: parseInt(id)}).returning('board_id').then(boardId => {
